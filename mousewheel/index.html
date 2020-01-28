@@ -53,23 +53,27 @@
             current = (current+1)%total;            
             $("#fullpage .slide").removeClass("active");
             $("#fullpage .slide:eq("+current+")").addClass("active");
-            console.log(current);
+            //console.log(current);
 
             if(current === 3){
                 gsap.set( $("#fullpage .slide:eq(0)"), {y:"100%"});
             }
 
-            gsap.to( $("#fullpage .slide:eq("+current+")"), {duration:1, y:"0%", ease:"power4.out"});
-            gsap.to( $("#fullpage .slide:eq("+prev+")"), {duration:1, y:"-100%", ease:"power4.out"});
+            gsap.fromTo( $("#fullpage .slide:eq("+current+")"), {y:"100%",},{duration:1, y:"0%", ease:"power4.out"});
+            gsap.fromTo( $("#fullpage .slide:eq("+prev+")"),{y:"0%"}, {duration:1, y:"-100%", ease:"power4.out"});
 
         }
         $('#fullpage').on('mousewheel', function(event) {
-            //console.log(event.deltaX, event.deltaY, event.deltaFactor);           
-            if(event.deltaY === -1){
-                slideDown();
-            }else{
-                slideUp();
-            }
+            //console.log(event.deltaX, event.deltaY, event.deltaFactor); 
+           
+            if(!gsap.isTweening("section.active"))  {
+                if(event.deltaY === -1){
+                    slideDown();
+                }else{
+                    slideUp();
+                }
+            }        
+            
         });
     </script>
 </body>
