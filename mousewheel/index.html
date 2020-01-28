@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>MouseWheel</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.0.5/gsap.min.js"></script>
+    <script src="jquery.mousewheel.min.js"></script>
+    <style>
+      body,html{
+        height: 100%;
+        overflow: hidden;
+        padding: 0;
+        margin: 0;
+      }
+      #fullpage{
+          height: 100%;
+          overflow: hidden;
+      }
+      section{          
+          position: absolute;
+          left: 0;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          transform: translate3d(0,100%,0);
+      }   
+    </style>
+</head>
+<body>
+    <div id="fullpage">
+        <section class="slide active" style="background-color: tomato;"></section>
+        <section class="slide" style="background-color: limegreen;"></section>
+        <section class="slide" style="background-color: cyan;"></section class="slide">
+        <section class="slide" style="background-color: magenta;"></section class="slide">
+    </div>
+    <script>
+        gsap.to("#fullpage .active", {duration:1, y:"0%", ease:"power4.out"});
+        //gsap.to($("#fullpage section:last-child"), {duration:1, y:"-100%", ease:"power4.out"});
+
+        var current = 0;
+        var total = $("#fullpage .slide").length;  
+        function slideUp(){
+            current = (current-1)%total;            
+            $("#fullpage .slide").removeClass("active");
+            $("#fullpage .slide:eq("+current+")").addClass("active");
+        }
+          
+        function slideDown(){
+            var prev =  current%total;                
+            current = (current+1)%total;            
+            $("#fullpage .slide").removeClass("active");
+            $("#fullpage .slide:eq("+current+")").addClass("active");
+            console.log(current);
+
+            if(current === 3){
+                gsap.set( $("#fullpage .slide:eq(0)"), {y:"100%"});
+            }
+
+            gsap.to( $("#fullpage .slide:eq("+current+")"), {duration:1, y:"0%", ease:"power4.out"});
+            gsap.to( $("#fullpage .slide:eq("+prev+")"), {duration:1, y:"-100%", ease:"power4.out"});
+
+        }
+        $('#fullpage').on('mousewheel', function(event) {
+            //console.log(event.deltaX, event.deltaY, event.deltaFactor);           
+            if(event.deltaY === -1){
+                slideDown();
+            }else{
+                slideUp();
+            }
+        });
+    </script>
+</body>
+</html>
