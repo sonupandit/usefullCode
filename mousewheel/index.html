@@ -42,23 +42,29 @@
 <body>
     <div id="fullpage">
         <section class="slide active" style="background-color: tomato;">
-            <video style="width:100%" muted autoplay src="https://www.chanandeayrs.com/wp-content/uploads/2018/09/beldi_full.mp4"></video>
+            <video style="width:100%" muted src="https://www.chanandeayrs.com/wp-content/uploads/2018/09/beldi_full.mp4"></video>
         </section>
         <section class="slide" style="background-color: limegreen;">
-            <video style="width:100%" muted autoplay src="https://www.chanandeayrs.com/wp-content/uploads/2018/09/weavers_house_full.mp4"></video>
+            <video style="width:100%" muted src="https://www.chanandeayrs.com/wp-content/uploads/2018/09/weavers_house_full.mp4"></video>
         </section>
         <section class="slide" style="background-color: cyan;">
-            <video style="width:100%" muted autoplay src="https://www.chanandeayrs.com/wp-content/uploads/2018/09/new_cross_lofts_full.mp4"></video>
+            <video style="width:100%" muted src="https://www.chanandeayrs.com/wp-content/uploads/2018/09/new_cross_lofts_full.mp4"></video>
         </section>
 
     </div>
     <script>
+        $(window).on("load", function(){
+
+       
         gsap.to("#fullpage .active", {
-            duration: 1,
+            duration: 1.5,
             y: "0%",
             ease: "power4.inOut"
         });
+        gsap.fromTo($("#fullpage .active video"), {scale: 1.2,y:"-15%"}, {delay:0.5,duration: 1.5, scale: 1,y:"0%",ease: "power4.out"});
         //gsap.to($("#fullpage section:last-child"), {duration:1, y:"-100%", ease:"power4.out"});
+        $("#fullpage .active video").get(0).play();
+
 
         var current = 0;
         var total = $("#fullpage .slide").length;
@@ -74,6 +80,14 @@
             gsap.fromTo($("#fullpage .slide:eq(" + prev + ")"), {y: "0%"}, {duration: 1.5,y: "100%",ease: "power4.inOut"});
 
             gsap.fromTo($("#fullpage .slide:eq(" + current + ") video"), {scale: 1.2,y:"-15%"}, {delay:0.5,duration: 1.5, scale: 1,y:"0%",ease: "power4.out"});
+            
+            setTimeout(function(){
+                $("#fullpage .slide:eq(" + current + ") video")[0].play();
+                var vidArr = $("#fullpage .slide:eq(" + current + ")").siblings().find("video").get(); 
+                $.each(vidArr, function(){
+                    $(this).get(0).pause();
+                });
+            },1000);
         }
 
         function slideDown() {
@@ -88,7 +102,37 @@
 
             gsap.fromTo($("#fullpage .slide:eq(" + current + ") video"), {scale: 1.2,y:"-15%"}, {delay:0.5,duration: 1.5, scale: 1,y:"0%",ease: "power4.out"});
 
+            setTimeout(function(){
+                $("#fullpage .slide:eq(" + current + ") video")[0].play();
+                var vidArr = $("#fullpage .slide:eq(" + current + ")").siblings().find("video").get(); 
+                $.each(vidArr, function(){
+                    $(this).get(0).pause();
+                });
+            },1000);
+
         }
+
+        $("#fullpage .slide video").on("ended", function(){
+            this.currentTime = 0.1;
+           console.log(this.currentTime)
+          if (!gsap.isTweening("section.active")) {  
+            slideDown();
+          }
+        });
+       
+       // keyboard Navigation
+       $(document).on("keyup", function(e){
+            console.log(e.keyCode);
+         if (!gsap.isTweening("section.active")) {  
+            if(e.keyCode === 38){
+                slideUp();
+            }else if(e.keyCode === 40){
+               slideDown()
+            }
+         }
+       });
+
+
         $('#fullpage').on('mousewheel', function(event) {
             if (!gsap.isTweening("section.active")) {
                 if (event.deltaY === -1) {
@@ -99,6 +143,7 @@
             }
 
         });
+    });
     </script>
 </body>
 
